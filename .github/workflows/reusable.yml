@@ -1,0 +1,36 @@
+name: Reusable Workflow
+
+on:
+  workflow_call:
+    inputs:
+      username:
+        required: true
+        type: string
+    secrets:
+        TEST:
+          required: true
+jobs:
+  reusable_job:
+    name: A reusable job
+    runs-on: ubuntu-latest
+    env:
+      TEST: ${{ secrets.TEST }}
+    steps:
+      - name: Log in
+        run: |
+          echo "Logging in as ${{ inputs.username }}"
+          # 여기서 ACCESS_TOKEN을 사용하여 실제 로그인 수행
+          # 주의: 절대로 시크릿 값을 직접 출력하지 마세요
+      
+      - name: Perform task
+        run: |
+          echo "Performing a task..."
+          echo $TEST
+          # ACCESS_TOKEN을 사용하여 작업 수행
+      
+      - name: Set output
+        id: set_output
+        run: echo "result=success" >> $GITHUB_OUTPUT
+
+    outputs:
+      task_result: ${{ steps.set_output.outputs.result }}

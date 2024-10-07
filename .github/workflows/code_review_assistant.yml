@@ -1,0 +1,28 @@
+name: Get feedback from OpenAI Assistant
+
+on:
+  workflow_call:
+    inputs:
+      repository:
+        required: true
+        type: string
+
+jobs:
+  process-events:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Logging
+        run: |
+          echo "${{ secrets.repository }} uses this workflow"
+          echo "OPENAI_ASSISTANT_ID: ${{ secrets.OPENAI_ASSISTANT_ID }}"
+          echo "OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}"
+          echo "GITHUB_TOKEN: ${{ github.token }}"
+          
+      - name: Run Prompt
+        if: github.event_name == 'pull_request' || ${{ contains(github.event.*.labels.*.name, 'AI Review') }}
+        uses: isat/codegpt@v1.0.0
+        with:
+          OPENAI_ASSISTANT_ID: "asst_CALOZCu4nUe1AFx467YP7b4F"
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          OPENAI_API_KEY: "sk-proj-xxVzr0885NnnQVk2go4VT3BlbkFJfVoWNrV9ng0HBy3eewtZ"
